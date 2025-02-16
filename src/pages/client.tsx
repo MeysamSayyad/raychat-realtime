@@ -1,7 +1,39 @@
+import { useEffect, useState } from "react";
 import MessageCard from "../components/client/messageCard";
 import MessageInput from "../components/client/messageInput";
+import { io } from "socket.io-client";
+import Input from "../components/utils/Input";
 
 export default function Client() {
+  const socket = io("http://localhost:2000");
+  const agent = io("http://localhost:2000");
+  const [name, setName] = useState("");
+  useEffect(() => {
+    socket.emit("register-agent", {
+      clientId: "string",
+      name: "string",
+    });
+    socket.emit(
+      "get-client-conversations",
+      {
+        clientId: "string",
+      },
+      (val) => {
+        console.log(val);
+      }
+    );
+    agent.emit(
+      "register-agent",
+      {
+        clientId: "string",
+        name: "string",
+      },
+      () => {
+        console.log(socket);
+      }
+    );
+    console.log(agent);
+  }, []);
   return (
     <section
       dir="rtl"
@@ -22,6 +54,21 @@ export default function Client() {
       </div>
       <div className=" pb-16  overflow-y-auto gap-2 px-3 py-2 flex flex-col w-full items-start">
         {/* chat section */}
+        <span
+          className={` 
+          
+             "bg-white border-gray-light rounded-br-none border"
+           
+         max-w-[60vw] break-all text-xs font-medium   rounded-lg p-2`}
+        >
+          <p className="">لطفا ابتدا نام خود را وارد کنید.</p>
+          <label htmlFor="name">نام:</label>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </span>
         <MessageCard user="agent" />
         <MessageCard user="client" />
         <MessageCard user="agent" />
