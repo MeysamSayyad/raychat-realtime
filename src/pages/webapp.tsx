@@ -4,7 +4,7 @@ import { socket } from "../socket";
 import { MessageData, MessageObject, Messages } from "../types/main";
 
 import MessageCard from "../components/webapp/AgentmessageCard";
-import AgentMessageInput from "../components/webapp/AgentMessageInput";
+import AgentMessageInput from "../components/webapp/AgentmessageInput";
 
 export default function Webapp() {
   const [selectedChat, setSelectedChat] = useState("");
