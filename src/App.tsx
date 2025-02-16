@@ -1,22 +1,7 @@
-import { useEffect, useState } from "react";
-
-import { io } from "socket.io-client";
 import "./App.css";
 import { Link } from "react-router";
 
 function App() {
-  const socket = io("http://localhost:2000");
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log(socket.id);
-    });
-    console.log(socket.id);
-    socket.emit("register-user", {
-      clientId: socket.id,
-      name: "string",
-    });
-  }, []);
-
   return (
     <>
       <section className=" flex w-screen items-center justify-center bg-gray-800 gap-3 h-screen">

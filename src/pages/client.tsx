@@ -1,39 +1,74 @@
 import { useEffect, useState } from "react";
 import MessageCard from "../components/client/messageCard";
 import MessageInput from "../components/client/messageInput";
-import { io } from "socket.io-client";
+import { socket } from "../socket";
+
 import Input from "../components/utils/Input";
+import { MessageObject, Messages } from "../types/main";
 
 export default function Client() {
-  const socket = io("http://localhost:2000");
-  const agent = io("http://localhost:2000");
   const [name, setName] = useState("");
-  useEffect(() => {
-    socket.emit("register-agent", {
-      clientId: "string",
-      name: "string",
+  const [clientId, setClientId] = useState("");
+  const [messages, setMessages] = useState<MessageObject[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const sendMessage = (text: string) => {
+    socket.emit("user-message", {
+      clientId: clientId,
+      text: text,
     });
-    socket.emit(
-      "get-client-conversations",
-      {
-        clientId: "string",
-      },
-      (val) => {
-        console.log(val);
-      }
-    );
-    agent.emit(
-      "register-agent",
-      {
-        clientId: "string",
-        name: "string",
-      },
-      () => {
-        console.log(socket);
-      }
-    );
-    console.log(agent);
+
+    // socket.emit("get-client-conversations", { clientId }, GetuserMessages);
+  };
+  const UpdateMessages = (val: MessageObject) => {
+    setMessages((prevmessage) => [...prevmessage, val]);
+  };
+  const GetuserMessages = (userMessages: Messages) => {
+    if (userMessages?.success) {
+      setMessages(userMessages?.data?.messages);
+    }
+  };
+  const RegisterClient = () => {
+    if (!localStorage?.clientId) {
+      const clientId = Math.floor(Math.random() * (9000 - 100) + 100);
+      setClientId(`${clientId}`);
+
+      localStorage.setItem("clientId", `${clientId}`);
+      localStorage.setItem("name", name);
+      socket.emit("register-user", {
+        clientId: `${clientId}`,
+        name: name,
+      });
+      setIsAuthenticated(true);
+    } else {
+      const name = localStorage.getItem("name");
+      const clientId = localStorage.getItem("clientId");
+      setClientId(`${clientId}`);
+      socket.emit("register-user", {
+        clientId: clientId,
+        name: name,
+      });
+
+      setIsAuthenticated(true);
+    }
+  };
+  useEffect(() => {
+    socket.on("message", UpdateMessages);
+    if (localStorage?.clientId && localStorage?.name) {
+      RegisterClient();
+    }
+    return () => {
+      socket.off("message");
+    };
   }, []);
+  useEffect(() => {
+    if (isAuthenticated && clientId) {
+      socket.emit(
+        "get-client-conversations",
+        { clientId: clientId },
+        GetuserMessages
+      );
+    }
+  }, [isAuthenticated]);
   return (
     <section
       dir="rtl"
@@ -54,45 +89,49 @@ export default function Client() {
       </div>
       <div className=" pb-16  overflow-y-auto gap-2 px-3 py-2 flex flex-col w-full items-start">
         {/* chat section */}
-        <span
-          className={` 
-          
-             "bg-white border-gray-light rounded-br-none border"
-           
-         max-w-[60vw] break-all text-xs font-medium   rounded-lg p-2`}
-        >
-          <p className="">لطفا ابتدا نام خود را وارد کنید.</p>
-          <label htmlFor="name">نام:</label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+        {!isAuthenticated && (
+          <MessageCard
+            user="agent"
+            message={
+              <span
+                className={` p-3 gap-2 flex items-start flex-col justify-center `}
+              >
+                {/* register Form */}
+                <p className="">روزت بخیر برای ادامه نام خودت رو ثبت کن.</p>
+                <span className=" gap-1 text-sm  flex items-center  justify-center">
+                  <label htmlFor="name">نام :</label>
+
+                  <Input
+                    id="name"
+                    placeholder="نام خود را وارد کنید."
+                    className="!text-sm group !border-b transition-all !border-solid hover:border-gray-400 border-white focus:border-gray-400"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <button
+                    onClick={RegisterClient}
+                    disabled={name.trim() === ""}
+                    className=" w-[22px] shrink-0 rounded-full transition-all flex items-center justify-center bg-client-200 disabled:bg-gray-400 h-[22px] "
+                  >
+                    <img width={10} src="/icons/Send.svg" />
+                  </button>
+                </span>
+              </span>
+            }
           />
-        </span>
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
-        <MessageCard user="agent" />
-        <MessageCard user="client" />
+        )}
+        {messages?.map((item) => {
+          return (
+            <MessageCard
+              message={item.text}
+              user={item.isFromAgent ? "agent" : "client"}
+              date={item.timestamp}
+              key={item.id}
+            />
+          );
+        })}
         <span className=" w-full relative px-[10px]">
-          <MessageInput />
+          <MessageInput sendMessage={sendMessage} />
         </span>
       </div>
     </section>

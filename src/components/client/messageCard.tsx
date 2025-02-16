@@ -1,6 +1,14 @@
-import React from "react";
+import { ReactNode } from "react";
 
-export default function MessageCard({ user }: { user: "agent" | "client" }) {
+export default function MessageCard({
+  user,
+  message,
+  date,
+}: {
+  message?: ReactNode | string;
+  date?: string;
+  user: "agent" | "client";
+}) {
   return (
     <section
       className={` ${
@@ -13,7 +21,7 @@ export default function MessageCard({ user }: { user: "agent" | "client" }) {
         </span>
       ) : (
         <span className=" text-gray-600 text-[9px]">
-          <p>۱۱:۲۳ ب.ظ</p>
+          <p>{date}</p>
         </span>
       )}
       <span
@@ -23,11 +31,11 @@ export default function MessageCard({ user }: { user: "agent" | "client" }) {
             : "bg-client-200 text-white rounded-bl-none"
         } max-w-[60vw] break-all text-xs font-medium   rounded-lg p-2`}
       >
-        fgfghbgfhbfghfghfghfghghgfhhghghfghfghfghfghfghgfhgfh
+        {message}
       </span>
       {user === "agent" && (
         <span className=" text-gray-600 text-[9px]">
-          <p>۱۱:۲۳ ب.ظ</p>
+          <p>{date}</p>
         </span>
       )}
     </section>
