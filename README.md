@@ -71,7 +71,6 @@ npm run preview
 
 ```
 raychat-realtime/
-│── dist/                 # Production build output
 │── public/               # Public static assets
 │── src/                  # Source code
 │   ├── assets/           # Static assets
