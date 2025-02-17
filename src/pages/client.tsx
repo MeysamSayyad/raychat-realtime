@@ -4,6 +4,7 @@ import MessageInput from "../components/client/messageInput";
 import { socket } from "../socket";
 
 import { MessageObject, Messages } from "../types/main";
+import { Link } from "react-router";
 
 export default function Client() {
   const [name, setName] = useState("");
@@ -84,18 +85,25 @@ export default function Client() {
       dir="rtl"
       className=" overflow-hidden w-full max-h-[100vh]  flex flex-col items-center"
     >
-      <div className="w-full gap-2 py-[15px] px-[12px] flex items-center justify-start h-[64px] bg-client-200  ">
+      <div className="w-full py-[15px] px-[12px] flex items-center justify-between h-[64px] bg-client-200  ">
         {/* header section */}
-        <span className="  relative bg-client-100 rounded-full flex items-center justify-center border-2 border-white w-[36px] h-[36px] ">
-          JD
-          <span className=" bg-green-500 absolute border-2 border-white rounded-full w-[10px] h-[10px] top-0 right-0"></span>
+        <span className=" flex items-center justify-start gap-2">
+          <span className="  relative bg-client-100 rounded-full flex items-center justify-center border-2 border-white w-[36px] h-[36px] ">
+            JD
+            <span className=" bg-green-500 absolute border-2 border-white rounded-full w-[10px] h-[10px] top-0 right-0"></span>
+          </span>
+          <span className=" text-white flex flex-col items-start ">
+            <p className=" text-sm">پشتیبانی آنلاین</p>
+            <p className=" text-xs opacity-90 font-light">
+              پاسخگوی سوالات شما هستیم
+            </p>
+          </span>
         </span>
-        <span className=" text-white flex flex-col items-start ">
-          <p className=" text-sm">پشتیبانی آنلاین</p>
-          <p className=" text-xs opacity-90 font-light">
-            پاسخگوی سوالات شما هستیم
-          </p>
-        </span>
+        <Link to={"/webapp"}>
+          <span className=" text-xs px-2 bg-agent-main text-white rounded-full py-1 ">
+            Webapp&#128279;
+          </span>
+        </Link>
       </div>
       <div
         ref={chatRef}
