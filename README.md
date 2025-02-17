@@ -1,50 +1,105 @@
-# React + TypeScript + Vite
+# RayChat-RealTime
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+RayChat-RealTime is a real-time chat application built using Vite, TypeScript, and React. It enables instant messaging with a smooth user experience and optimized performance.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Real-time messaging** using WebSockets.
+- **Optimized performance** with Vite.
+- **TypeScript support** for better code maintainability.
+- **Modern UI** built with React.
+- **Scalability and modularity** for future enhancements.
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Prerequisites
 
-- Configure the top-level `parserOptions` property like this:
+Ensure you have the following installed:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- [Node.js](https://nodejs.org/) (latest LTS recommended)
+- [Yarn](https://yarnpkg.com/) or npm
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/raychat-realtime.git
+   cd raychat-realtime
+   ```
+2. Install dependencies:
+   ```sh
+   yarn install
+   # or
+   npm install
+   ```
+
+### Running the Development Server
+
+To start the development server, run:
+
+```sh
+yarn dev
+# or
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+This will start the Vite development server, and the application will be available at `http://localhost:5173` (default port).
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Building for Production
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+To build the project for production, run:
+
+```sh
+yarn build
+# or
+npm run build
 ```
+
+The built files will be available in the `dist` folder.
+
+### Running in Production
+
+To preview the production build locally:
+
+```sh
+yarn preview
+# or
+npm run preview
+```
+
+## Project Structure
+
+```
+raychat-realtime/
+│── public/               # Public static assets
+│── src/                  # Source code
+│   ├── assets/           # Static assets
+│   ├── components/       # Reusable UI components
+│   ├── pages/            # Application pages
+│   ├── types/            # Type definitions
+│   ├── App.css           # Component styles
+│   ├── App.tsx           # Main application component
+│   ├── global.css        # Global styles
+│   ├── main.tsx          # Entry point
+│   ├── socket.ts         # WebSocket service
+│   ├── vite-env.d.ts     # Environment type definitions
+│── .gitignore            # Git ignore file
+│── eslint.config.js      # ESLint configuration
+│── index.html            # Main HTML file
+│── package.json          # Project metadata and dependencies
+│── package-lock.json     # Dependency lock file
+│── README.md             # Project documentation
+│── tsconfig.app.json     # TypeScript configuration (app)
+│── tsconfig.json         # TypeScript configuration
+│── tsconfig.node.json    # TypeScript configuration (node)
+│── vite.config.ts        # Vite configuration
+```
+
+## Technologies Used
+
+- **Vite** - Fast build tool
+- **React** - Frontend framework
+- **TypeScript** - Type-safe JavaScript
+- **WebSockets** - Real-time communication
+- Tailwind CSS - Styling framework
+- socket.io Client
