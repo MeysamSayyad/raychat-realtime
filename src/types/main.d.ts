@@ -1,4 +1,4 @@
-export type Messages={success:boolean,data:userMessageObject}
+export type Messages={success:boolean,data:userMessageObject,error?:string}
 export type MessageObject={
         id: string,
         text: string,

@@ -62,6 +62,9 @@ export default function Webapp() {
 
     if (userMessages?.success) {
       setMessages(userMessages?.data?.messages);
+    } else if (userMessages?.error?.includes("Unauthorized")) {
+      window.alert(`connection with Socket Lost.
+Reload Page & MAKE SURE to only have one tab of '/webapp' OPEN`);
     }
   };
   useEffect(() => {
