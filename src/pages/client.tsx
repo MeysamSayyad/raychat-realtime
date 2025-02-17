@@ -34,7 +34,9 @@ export default function Client() {
   const RegisterClient = () => {
     // register client and store clientID
     if (!localStorage?.clientId) {
-      const clientId = Math.floor(Math.random() * (9000 - 100) + 100);
+      const clientId = `${
+        (Date.now() % 10000) + Math.floor(Math.random() * 1000)
+      }`;
       setClientId(`${clientId}`);
 
       localStorage.setItem("clientId", `${clientId}`);
