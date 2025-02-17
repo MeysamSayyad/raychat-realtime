@@ -70,17 +70,30 @@ npm run preview
 ## Project Structure
 
 ```
-raychat-realtime/src/
-│── assets/              # Static assets
-│── components/          # Reusable UI components
-│── pages/               # Application pages
-│── types/               # Type definitions
-│── App.css              # Component styles
-│── App.tsx              # Main application component
-│── global.css           # Global styles
-│── main.tsx             # Entry point
-│── socket.ts            # WebSocket service
-│── vite-env.d.ts        # Environment type definitions
+raychat-realtime/
+│── dist/                 # Production build output
+│── public/               # Public static assets
+│── src/                  # Source code
+│   ├── assets/           # Static assets
+│   ├── components/       # Reusable UI components
+│   ├── pages/            # Application pages
+│   ├── types/            # Type definitions
+│   ├── App.css           # Component styles
+│   ├── App.tsx           # Main application component
+│   ├── global.css        # Global styles
+│   ├── main.tsx          # Entry point
+│   ├── socket.ts         # WebSocket service
+│   ├── vite-env.d.ts     # Environment type definitions
+│── .gitignore            # Git ignore file
+│── eslint.config.js      # ESLint configuration
+│── index.html            # Main HTML file
+│── package.json          # Project metadata and dependencies
+│── package-lock.json     # Dependency lock file
+│── README.md             # Project documentation
+│── tsconfig.app.json     # TypeScript configuration (app)
+│── tsconfig.json         # TypeScript configuration
+│── tsconfig.node.json    # TypeScript configuration (node)
+│── vite.config.ts        # Vite configuration
 ```
 
 ## Technologies Used
