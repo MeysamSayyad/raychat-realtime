@@ -21,10 +21,10 @@ export default function ConversationList({
       </h1>
       <div className=" overflow-y-auto flex flex-col w-full items-center">
         {/* user list */}
-        {conversations?.map((item) => {
+        {conversations?.map((item, index) => {
           return (
             <ConversationCard
-              key={item.clientId}
+              key={`${item.clientId}-${index}`}
               onClick={() => setSelectedChat(item?.clientId)}
               name={item?.clientId}
               selected={selectedChat == item?.clientId}

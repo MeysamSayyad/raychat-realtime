@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export default function MessageCard({
+export default function AgentMessageCard({
   user,
   message,
 }: {
@@ -17,9 +17,9 @@ export default function MessageCard({
       <span
         className={` ${
           user === "agent"
-            ? "bg-white px-[17px]  rounded-br-none "
+            ? "bg-white px-[17px]   rounded-br-none "
             : "bg-agent-main px-[38px] text-white rounded-bl-none"
-        } max-w-[60vw] break-all text-xs font-medium   rounded-lg py-[16px] `}
+        } max-w-[60vw] lg:text-base break-words whitespace-pre-line text-xs font-medium   rounded-lg py-[16px] `}
       >
         {message}
       </span>

@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MessageCard from "../components/client/messageCard";
 import MessageInput from "../components/client/messageInput";
 import { socket } from "../socket";
 
-import Input from "../components/utils/Input";
 import { MessageObject, Messages } from "../types/main";
 
 export default function Client() {
@@ -11,6 +10,7 @@ export default function Client() {
   const [clientId, setClientId] = useState("");
   const [messages, setMessages] = useState<MessageObject[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const chatRef = useRef<HTMLDivElement>(null);
   const sendMessage = (text: string) => {
     socket.emit("user-message", {
       clientId: clientId,
@@ -20,14 +20,18 @@ export default function Client() {
     // socket.emit("get-client-conversations", { clientId }, GetuserMessages);
   };
   const UpdateMessages = (val: MessageObject) => {
+    // add new messages
+
     setMessages((prevmessage) => [...prevmessage, val]);
   };
   const GetuserMessages = (userMessages: Messages) => {
+    // get all current messages
     if (userMessages?.success) {
       setMessages(userMessages?.data?.messages);
     }
   };
   const RegisterClient = () => {
+    // register client and store clientID
     if (!localStorage?.clientId) {
       const clientId = Math.floor(Math.random() * (9000 - 100) + 100);
       setClientId(`${clientId}`);
@@ -61,6 +65,12 @@ export default function Client() {
     };
   }, []);
   useEffect(() => {
+    if (chatRef?.current) {
+      // scroll messages down every time new message arrives
+      chatRef.current.scrollTop = chatRef?.current?.scrollHeight;
+    }
+  }, [messages]);
+  useEffect(() => {
     if (isAuthenticated && clientId) {
       socket.emit(
         "get-client-conversations",
@@ -87,31 +97,34 @@ export default function Client() {
           </p>
         </span>
       </div>
-      <div className=" pb-16  overflow-y-auto gap-2 px-3 py-2 flex flex-col w-full items-start">
+      <div
+        ref={chatRef}
+        className=" pb-20  overflow-y-auto gap-2 px-3 py-2 flex flex-col w-full items-start"
+      >
         {/* chat section */}
         {!isAuthenticated && (
           <MessageCard
             user="agent"
             message={
               <span
-                className={` p-3 gap-2 flex items-start flex-col justify-center `}
+                className={` p-3 gap-2 break-after-all flex items-start flex-col justify-center `}
               >
                 {/* register Form */}
-                <p className="">روزت بخیر برای ادامه نام خودت رو ثبت کن.</p>
+                <p className=" break-normal">
+                  روزت بخیر برای ادامه نام خودت رو ثبت کن.
+                </p>
                 <span className=" gap-1 text-sm  flex items-center  justify-center">
-                  <label htmlFor="name">نام :</label>
-
-                  <Input
+                  <input
                     id="name"
                     placeholder="نام خود را وارد کنید."
-                    className="!text-sm group !border-b transition-all !border-solid hover:border-gray-400 border-white focus:border-gray-400"
+                    className="!text-sm outline-0  group !border-b transition-all !border-solid hover:border-gray-400 border-white focus:border-gray-400"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                   <button
                     onClick={RegisterClient}
                     disabled={name.trim() === ""}
-                    className=" w-[22px] shrink-0 rounded-full transition-all flex items-center justify-center bg-client-200 disabled:bg-gray-400 h-[22px] "
+                    className=" w-[22px] cursor-pointer shrink-0 rounded-full transition-all flex items-center justify-center bg-client-200 disabled:bg-gray-400 h-[22px] "
                   >
                     <img width={10} src="/icons/Send.svg" />
                   </button>
@@ -121,6 +134,7 @@ export default function Client() {
           />
         )}
         {messages?.map((item) => {
+          // mapping through messages
           return (
             <MessageCard
               message={item.text}
@@ -130,7 +144,11 @@ export default function Client() {
             />
           );
         })}
-        <span className=" w-full relative px-[10px]">
+        <span
+          className=" flex justify-center items-center left-0
+bottom-[16px] w-full fixed px-[10px]"
+        >
+          {/* message Input Field */}
           <MessageInput sendMessage={sendMessage} />
         </span>
       </div>

@@ -22,7 +22,7 @@ export default function ConversationCard({
       </span>
       <span className="  relative text-xs text-white w-[20px] flex items-center justify-center rounded-full   h-[20px] bg-agent-main">
         <span className=" absolute rounded-full top-0.5 left-0.5 bg-agent-main h-[16px] animate-ping w-[16px]"></span>
-        <p className="z-10"> {unread}</p>
+        <p className="z-10">{unread}</p>
       </span>
     </div>
   );

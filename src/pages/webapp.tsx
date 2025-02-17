@@ -3,8 +3,8 @@ import ConversationList from "../components/webapp/conversationList";
 import { socket } from "../socket";
 import { MessageData, MessageObject, Messages } from "../types/main";
 
-import MessageCard from "../components/webapp/AgentmessageCard";
 import AgentMessageInput from "../components/webapp/AgentmessageInput";
+import AgentMessageCard from "../components/webapp/AgentmessageCard";
 
 export default function Webapp() {
   const [selectedChat, setSelectedChat] = useState("");
@@ -13,6 +13,9 @@ export default function Webapp() {
   const [update, setUpdate] = useState(false);
   const [messages, setMessages] = useState<MessageObject[]>([]);
   const chatRef = useRef<HTMLDivElement>(null);
+  const exitChat = () => {
+    setSelectedChat("");
+  };
   const sendMessage = (text: string) => {
     socket.emit("agent-message", {
       clientId: selectedChat,
@@ -30,21 +33,29 @@ export default function Webapp() {
       }
       return perv;
     });
-    setConversations((perv) =>
-      perv.map((item) => {
-        return {
-          ...item,
-          messages:
-            item.clientId == data?.conversation?.clientId
-              ? data.conversation.messages
-              : item.messages,
-          unread:
-            item.clientId == data?.conversation?.clientId
-              ? data?.conversation?.unread
-              : item.unread,
-        };
-      })
-    );
+
+    setConversations((perv) => {
+      if (
+        perv.filter((item) => item.clientId == data?.conversation?.clientId)
+          .length <= 0
+      ) {
+        return [...perv, data.conversation];
+      } else {
+        return perv.map((item) => {
+          return {
+            ...item,
+            messages:
+              item.clientId == data?.conversation?.clientId
+                ? data.conversation.messages
+                : item.messages,
+            unread:
+              item.clientId == data?.conversation?.clientId
+                ? data?.conversation?.unread
+                : item.unread,
+          };
+        });
+      }
+    });
   };
   const GetuserMessages = (userMessages: Messages) => {
     // get current user massages based on ClientId
@@ -55,6 +66,7 @@ export default function Webapp() {
   };
   useEffect(() => {
     if (chatRef?.current) {
+      // scroll messages down every time new message arrives
       chatRef.current.scrollTop = chatRef?.current?.scrollHeight;
     }
   }, [messages]);
@@ -66,6 +78,7 @@ export default function Webapp() {
     socket.on("new-user-message", UpdateConversation);
     return () => {
       socket.off("existing-conversations");
+      socket.off("new-user-message");
     };
   }, []);
   useEffect(() => {
@@ -81,30 +94,63 @@ export default function Webapp() {
       className=" overflow-clip h-full flex items-start w-full "
     >
       {/* sideBar */}
-      <div className=" shrink-0 w-[16%]">
+      <div className=" bg-white h-screen  shrink-0 w-full lg:min-w-[220px] lg:w-[16%]">
         <ConversationList
           conversations={conversations}
           selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
         />
       </div>
-      <div className="  w-full max-h-screen">
-        {/* ChatSection */}
-        <div
-          ref={chatRef}
-          className="pt-[25px] pl-[31px] pr-[28px] pb-20  flex flex-col gap-[27px] w-full max-h-screen overflow-y-auto "
-        >
-          {messages?.map((item) => {
-            return (
-              <MessageCard
-                message={item.text}
-                user={item.isFromAgent ? "agent" : "client"}
-                key={item.id}
-              />
-            );
-          })}
-          <AgentMessageInput sendMessage={sendMessage} />
-        </div>
+
+      <div
+        className={`lg:static z-30 fixed ${
+          selectedChat ? "block" : "hidden"
+        } lg:block  bg-white  w-full h-full lg:max-h-screen`}
+      >
+        {selectedChat === "" ? (
+          <div className=" w-full h-screen flex justify-center items-center">
+            <span>برای مشاهده پیام ها یک کاربر را انتخاب کنید.</span>
+          </div>
+        ) : (
+          <>
+            <div className="w-full lg:hidden gap-2 py-[15px] px-[12px] flex items-center justify-between h-[64px] bg-agent-main  ">
+              <span className=" w-full text-white flex justify-self-start  items-center ">
+                <p className=" text-sm ">کاربر :</p>
+                <p className=" text-[14px]">{selectedChat}</p>
+              </span>
+              <button
+                onClick={exitChat}
+                className=" cursor-pointer p-1 rounded-full text-sm text-white"
+              >
+                &#9664;
+              </button>
+            </div>
+            {/* ChatSection */}
+            <div
+              ref={chatRef}
+              className="pt-[25px] pl-[31px] pr-[28px] lg:pb-22 pb-38  flex flex-col gap-[27px] w-full max-h-screen overflow-y-auto "
+            >
+              {messages?.map((item) => {
+                // mapping through messages
+                return (
+                  <AgentMessageCard
+                    message={item.text}
+                    user={item.isFromAgent ? "agent" : "client"}
+                    key={item.id}
+                  />
+                );
+              })}
+              <span className=" bottom-[16px] lg:w-[80%] w-full pl-[15px] px-[10px] fixed items-center flex justify-center left-0">
+                {selectedChat && (
+                  <AgentMessageInput
+                    selectedChat={selectedChat}
+                    sendMessage={sendMessage}
+                  />
+                )}
+              </span>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

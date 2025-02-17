@@ -9,6 +9,21 @@ export default function MessageCard({
   date?: string;
   user: "agent" | "client";
 }) {
+  const convertToJalali = () => {
+    if (date) {
+      let options: Intl.DateTimeFormatOptions = {
+        minute: "2-digit",
+        hour12: true,
+        hourCycle: "h12",
+        hour: "numeric",
+      };
+      const dateObject = new Date(date).toLocaleDateString("fa-IR", options);
+      let dateString = dateObject.replace("قبل‌ازظهر", "ق.ظ");
+      dateString = dateString.replace("بعدازظهر", "ب.ظ");
+      return dateString;
+    }
+  };
+  convertToJalali();
   return (
     <section
       className={` ${
@@ -20,8 +35,8 @@ export default function MessageCard({
           JD
         </span>
       ) : (
-        <span className=" text-gray-600 text-[9px]">
-          <p>{date}</p>
+        <span className=" lg:text-[10px] text-gray-600 text-[9px]">
+          <p>{convertToJalali()}</p>
         </span>
       )}
       <span
@@ -29,13 +44,13 @@ export default function MessageCard({
           user === "agent"
             ? "bg-white border-gray-light rounded-br-none border"
             : "bg-client-200 text-white rounded-bl-none"
-        } max-w-[60vw] break-all text-xs font-medium   rounded-lg p-2`}
+        } max-w-[60vw] break-words lg:text-[15px] whitespace-pre-line text-xs font-medium   rounded-lg p-2`}
       >
         {message}
       </span>
       {user === "agent" && (
-        <span className=" text-gray-600 text-[9px]">
-          <p>{date}</p>
+        <span className=" text-gray-600 lg:text-[10px] text-[9px]">
+          <p>{convertToJalali()}</p>
         </span>
       )}
     </section>
